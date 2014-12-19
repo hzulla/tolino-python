@@ -11,7 +11,6 @@ import sys
 import datetime
 
 from tolinocloud import TolinoCloud
-from pprint import pprint
 
 def inventory(args):
 	c = TolinoCloud(args.partner)
@@ -128,7 +127,7 @@ s.set_defaults(func=delete)
 s = subparsers.add_parser('devices', help='list devices registered to cloud account')
 s.set_defaults(func=devices)
 
-s = subparsers.add_parser('unregister', help='remove device from cloud account')
+s = subparsers.add_parser('unregister', help='unregister device from cloud account (be careful!)')
 s.add_argument('device_id')
 s.set_defaults(func=unregister)
 
