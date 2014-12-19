@@ -15,7 +15,7 @@ Run by Telekom / T-Systems, the tolino cloud is used to both
 
 and
 
-- allow the user to upload / sync own files to his device(s)
+- allow the user to upload / sync own files to the user's device(s)
 
 Users can manage their purchased ebooks and uploads through a web
 interface, the tolino web reader, which is a HTML5/javascript
@@ -43,12 +43,12 @@ Works with Hugendubel.de (partner 13) only, so far.
 
 Tested with Linux, only. Patches welcome. Handle with care.
 
-TODO
-====
+To-Do
+=====
 
 Better error handling.
 
-More REST API calls (e.g. metadata edit, cover image upload).
+More REST API calls (e.g. meta data edit, cover image upload).
 
 Support for more resellers.
 
@@ -56,7 +56,7 @@ Hey, tolino developers at Telekom / T-Systems, please look at
 the comments in tolinocloud.py. It'd be really nice to get the
 specifications for the REST API. Thanks!
 
-LICENSE
+License
 =======
 
 **TolinoCloud** is distributed under the terms of the
