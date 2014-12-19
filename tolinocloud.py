@@ -28,6 +28,7 @@ import platform
 import json
 import base64
 import requests
+import re
 from urllib.parse import urlparse, parse_qs
 
 class TolinoException(Exception):
@@ -35,12 +36,6 @@ class TolinoException(Exception):
 
 
 class TolinoCloud:
-
-    # Hey, tolino developers:
-    # I'd prefer to use my own client_id here instead of faking
-    # the web reader's ID. Can you provide this application with a
-    # valid client_id? Thanks!
-    client_id  = '4c20de744aa8b83b79b692524c7ec6ae'
 
     def _hardware_id():
     
@@ -97,19 +92,55 @@ class TolinoCloud:
     hardware_id = _hardware_id()
     
     partner_mapping = {
+         3 : 'Thalia.de',
         13 : 'Hugendubel.de'
         # TODO: more to come
     }
     
     partner_settings = {
+         3: {
+            'partner'          : 'Thalia.de',
+            'client_id'        : 'webshop01',
+            'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
+            'signup_url'       : 'https://ssl.thalia.de/shop/home/kunde/neu/',
+            'profile_url'      : 'https://ssl.thalia.de/shop/home/kunde/',
+            'auth_url'         : 'https://auth.buch.de/auth/oauth2/authorize',
+            'login_url'        : 'https://ssl.thalia.de/shop/home/login/dologin/',
+            'login_form'       : {
+                'username' : 'username',
+                'password' : 'password',
+                'extra'    : {}
+             },
+            'login_cookie'     : 'KUNDE',
+            'tat_url'          : 'https://ssl.thalia.de/shop/home/ebook/anzeigen/',
+            'logout_url'       : 'https://www.thalia.de/shop/home/login/logout/',
+            'reader_url'       : 'https://html5reader.thalia.de/library/library.html#!/library',
+            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/registerhw',
+            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+            },
         13: {
             'partner'          : 'Hugendubel.de',
+            'client_id'        : '4c20de744aa8b83b79b692524c7ec6ae',
+            'scope'            : 'ebook_library',
             'signup_url'       : 'https://www.hugendubel.de/go/my_my/my_newRegistration/',
             'profile_url'      : 'https://www.hugendubel.de/go/my_my/my_data/',
             'token_url'        : 'https://api.hugendubel.de/rest/oauth2/token',
             'revoke_url'       : 'https://api.hugendubel.de/rest/oauth2/revoke',
             'auth_url'         : 'https://www.hugendubel.de/oauth2/authorize',
             'login_url'        : 'https://www.hugendubel.de/go/my_dry/my_login/lfa/login/receiver_object/my_login/',
+            'login_form'       : {
+                'username' : 'form[login]',
+                'password' : 'form[password]',
+                'extra'    : {
+                    'form_send' : 1
+                }
+            },
+            'login_cookie'     : 'shop[login]',
             'reader_url'       : 'https://webreader.hugendubel.de/library/library.html#!/library',
             'register_url'     : 'https://bosh.pageplace.de/bosh/rest/registerhw',
             'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
@@ -131,57 +162,70 @@ class TolinoCloud:
         
         # Login with partner site
         # to retrieve site's cookies within browser session
-        r = s.post(c['login_url'], data = {
-            'form_send'      : '1',
-            'form[login]'    : username,
-            'form[password]' : password
-        }, verify=False)
-        if not 'shop[login]' in s.cookies:
+        data = c['login_form']['extra']
+        data[c['login_form']['username']] = username
+        data[c['login_form']['password']] = password
+        r = s.post(c['login_url'], data, verify=False)
+        if not c['login_cookie'] in s.cookies:
             raise TolinoException('login to {} failed.'.
                 format(self.partner_mapping[self.partner_id]))
+
+        auth_code = ""
+        if 'tat_url' in c:
+            try:
+                r = s.get(c['tat_url'], verify=False)
+                b64 = re.search(r'\?tat=(.*?)#library', r.text).group(1)
+                self.access_token = base64.b64decode(b64).decode('utf-8')
+            except:
+                raise TolinoException('oauth access token request failed.')
+        else:
+            # Request OAUTH code
+            r = s.get(c['auth_url'], params = {
+                'client_id'     : c['client_id'],
+                'response_type' : 'code',
+                'scope'         : c['scope'],
+                'redirect_uri'  : c['reader_url']
+            }, verify=False, allow_redirects=False)
+            try:
+                params = parse_qs(urlparse(r.headers['Location']).query)
+                auth_code = params['code'][0]
+            except:
+                raise TolinoException('oauth code request failed.')
         
-        # Request OAUTH code
-        r = s.get(c['auth_url'], params = {
-            'client_id'     : TolinoCloud.client_id,
-            'response_type' : 'code',
-            'scope'         : 'ebook_library',
-            'redirect_uri'  : c['reader_url']
-        }, verify=False, allow_redirects=False)
-        try:
-            params = parse_qs(urlparse(r.headers['Location']).query)
-            auth_code = params['code'][0]
-        except:
-            raise TolinoException('oauth code request failed.')
-        
-        # Fetch OAUTH access token
-        r = s.post(c['token_url'], data = {
-            'client_id'    : TolinoCloud.client_id,
-            'grant_type'   : 'authorization_code',
-            'code'         : auth_code,
-            'scope'        : 'ebook_library',
-            'redirect_uri' : c['reader_url']
-        }, verify=False, allow_redirects=False)
-        try:
-            j = r.json()
-            self.access_token = j['access_token']
-            self.refresh_token = j['refresh_token']
-            self.token_expires = int(j['expires_in'])
-        except:
-            raise TolinoException('oauth access token request failed.')
+            # Fetch OAUTH access token
+            r = s.post(c['token_url'], data = {
+                'client_id'    : c['client_id'],
+                'grant_type'   : 'authorization_code',
+                'code'         : auth_code,
+                'scope'        : c['scope'],
+                'redirect_uri' : c['reader_url']
+            }, verify=False, allow_redirects=False)
+            try:
+                j = r.json()
+                self.access_token = j['access_token']
+                self.refresh_token = j['refresh_token']
+                self.token_expires = int(j['expires_in'])
+            except:
+                raise TolinoException('oauth access token request failed.')
     
     def logout(self):
         s = self.session;
         c = self.partner_settings[self.partner_id]
 
-        r = s.post(c['revoke_url'],
-            data = {
-                'client_id'  : TolinoCloud.client_id,
-                'token_type' : 'refresh_token',
-                'token'      : self.refresh_token
-            }
-        )
-        if r.status_code != 200:
-            raise TolinoException('logout failed.')
+        if 'revoke_url' in c:
+            r = s.post(c['revoke_url'],
+                data = {
+                    'client_id'  : c['client_id'],
+                    'token_type' : 'refresh_token',
+                    'token'      : self.refresh_token
+                }
+            )
+            if r.status_code != 200:
+                raise TolinoException('logout failed.')
+        else:
+            r = s.post(c['logout_url'])
+            if r.status_code != 200:
+                raise TolinoException('logout failed.')
 
 
     def register(self):
