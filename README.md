@@ -43,6 +43,7 @@ Works with these partners:
 - Thalia.de (3)
 - Buch.de (6)
 - Hugendubel.de (13)
+
 (More may be added in the future.)
 
 Tested with Linux, only. Patches welcome. Handle with care.
