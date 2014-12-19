@@ -93,6 +93,7 @@ class TolinoCloud:
     
     partner_mapping = {
          3 : 'Thalia.de',
+         6 : 'Buch.de',
         13 : 'Hugendubel.de'
         # TODO: more to come
     }
@@ -104,7 +105,6 @@ class TolinoCloud:
             'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
             'signup_url'       : 'https://ssl.thalia.de/shop/home/kunde/neu/',
             'profile_url'      : 'https://ssl.thalia.de/shop/home/kunde/',
-            'auth_url'         : 'https://auth.buch.de/auth/oauth2/authorize',
             'login_url'        : 'https://ssl.thalia.de/shop/home/login/dologin/',
             'login_form'       : {
                 'username' : 'username',
@@ -113,8 +113,32 @@ class TolinoCloud:
              },
             'login_cookie'     : 'KUNDE',
             'tat_url'          : 'https://ssl.thalia.de/shop/home/ebook/anzeigen/',
-            'logout_url'       : 'https://www.thalia.de/shop/home/login/logout/',
+            'logout_url'       : 'https://ssl.thalia.de/shop/home/login/logout/',
             'reader_url'       : 'https://html5reader.thalia.de/library/library.html#!/library',
+            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/registerhw',
+            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+            },
+         6: {
+            'partner'          : 'Buch.de',
+            'client_id'        : 'webshop01',
+            'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
+            'signup_url'       : 'https://ssl.buch.de/shop/home/kunde/neu/',
+            'profile_url'      : 'https://ssl.buch.de/shop/home/kunde/',
+            'login_url'        : 'https://ssl.buch.de/shop/home/login/dologin/',
+            'login_form'       : {
+                'username' : 'username',
+                'password' : 'password',
+                'extra'    : {}
+             },
+            'login_cookie'     : 'KUNDE',
+            'tat_url'          : 'https://ssl.buch.de/shop/home/ebook/anzeigen/',
+            'logout_url'       : 'https://ssl.buch.de/shop/home/login/logout/',
+            'reader_url'       : 'https://html5reader.buch.de/library/library.html#!/library',
             'register_url'     : 'https://bosh.pageplace.de/bosh/rest/registerhw',
             'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
             'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',

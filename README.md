@@ -39,7 +39,10 @@ Status
 
 **It may be buggy. Bad things might happen. You were warned.**
 
-Works with Hugendubel.de (partner 13) and Thalia.de (partner 3) only.
+Works with these partners:
+- Thalia.de (3)
+- Buch.de (6)
+- Hugendubel.de (13)
 (More may be added in the future.)
 
 Tested with Linux, only. Patches welcome. Handle with care.
