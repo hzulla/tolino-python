@@ -1,0 +1,6 @@
+# edit these, then renamte to .tolinoclientrc
+
+[Defaults]
+user =     # your user name at the reseller's web site
+password = # your password
+partner =  # your device's reseller id, use --partner 0 for a full list
