@@ -358,11 +358,17 @@ class TolinoCloud:
                 'author'      : [a['name'] for a in j['epubMetaData']['author']],
                 'mime'        : j['epubMetaData']['deliverable'][0]['contentFormat'],
                 'type'        : j['epubMetaData']['type'].lower(),
-                'issued'      : int(j['epubMetaData']['issued']),
+                'issued'      : self._optionalInt(j['epubMetaData']['issued']),
                 'purchased'   : int(j['epubMetaData']['deliverable'][0]['purchased'])
             }
         except:
             raise TolinoException('could not parse metadata')
+
+    def _optionalInt(self, i):
+        try:
+            return int(i)
+        except TypeError:
+            return None
         
     def inventory(self):
         s = self.session;
