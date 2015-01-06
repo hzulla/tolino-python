@@ -350,7 +350,7 @@ class TolinoCloud:
 
     def _parse_metadata(self, j):
         try:
-            return {
+            md = {
                 'partner'     : int(j['resellerId']),
                 'id'          : j['epubMetaData']['identifier'],
                 'title'       : j['epubMetaData']['title'],
@@ -358,9 +358,11 @@ class TolinoCloud:
                 'author'      : [a['name'] for a in j['epubMetaData']['author']],
                 'mime'        : j['epubMetaData']['deliverable'][0]['contentFormat'],
                 'type'        : j['epubMetaData']['type'].lower(),
-                'issued'      : int(j['epubMetaData']['issued']),
                 'purchased'   : int(j['epubMetaData']['deliverable'][0]['purchased'])
             }
+            if j['epubMetaData']['issued']:
+                md['issued'] = int(j['epubMetaData']['issued'])
+            return md
         except:
             raise TolinoException('could not parse metadata')
         

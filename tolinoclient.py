@@ -34,7 +34,7 @@ def inventory(args):
                 'ebook' : 'tolino storage area'
             }.get(i['type'], i['type'])
         ))
-        if i['issued']:
+        if 'issued' in i:
             print('issued    : {}'.format(datetime.datetime.fromtimestamp(i['issued']/1000.0).strftime('%c')))
         print('purchased : {}'.format(datetime.datetime.fromtimestamp(i['purchased']/1000.0).strftime('%c')))
         print('partner   : {} / {}'.format(i['partner'], TolinoCloud.partner_mapping[i['partner']]))
