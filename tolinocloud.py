@@ -274,7 +274,7 @@ class TolinoCloud:
             }
         )
         if r.status_code != 200:
-            raise TolinoException('register {} failed.'.format(device_id))
+            raise TolinoException('register {} failed.'.format(TolinoCloud.hardware_id))
         
     def unregister(self, device_id = hardware_id):
         s = self.session;
