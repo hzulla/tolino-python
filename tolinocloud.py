@@ -91,11 +91,27 @@ class TolinoCloud:
 
     hardware_id = _hardware_id()
     
-    partner_mapping = {
+    partner_name = {
+         1 : 'Telekom',
          3 : 'Thalia.de',
+         4 : 'Thalia.at',
+         5 : 'Thalia.ch',
          6 : 'Buch.de',
-        13 : 'Hugendubel.de'
-        # TODO: more to come
+         7 : 'buch.ch',
+         8 : 'Books.ch',
+        10 : 'Weltbild.de',
+        11 : 'Weltbild.at',
+        12 : 'Weltbild.ch',
+        13 : 'Hugendubel.de',
+        20 : 'derclub.de',
+        21 : 'otto-media.de',
+        22 : 'donauland.at',
+        30 : 'bücher.de',
+        40 : 'Bild.de', # defunct?
+        60 : 'StandaardBoekhandel.be',
+        80 : 'Libri.de',
+        81 : 'eBook.de',
+        90 : 'ibs.it'
     }
     
     partner_settings = {
@@ -192,7 +208,7 @@ class TolinoCloud:
         r = s.post(c['login_url'], data, verify=False)
         if not c['login_cookie'] in s.cookies:
             raise TolinoException('login to {} failed.'.
-                format(self.partner_mapping[self.partner_id]))
+                format(self.partner_name[self.partner_id]))
 
         auth_code = ""
         if 'tat_url' in c:

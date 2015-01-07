@@ -37,7 +37,7 @@ def inventory(args):
         if 'issued' in i:
             print('issued    : {}'.format(datetime.datetime.fromtimestamp(i['issued']/1000.0).strftime('%c')))
         print('purchased : {}'.format(datetime.datetime.fromtimestamp(i['purchased']/1000.0).strftime('%c')))
-        print('partner   : {} / {}'.format(i['partner'], TolinoCloud.partner_mapping[i['partner']]))
+        print('partner   : {} / {}'.format(i['partner'], TolinoCloud.partner_name[i['partner']]))
 
 
 def devices(args):
@@ -51,7 +51,7 @@ def devices(args):
         print('device    : {}'.format(d['id']))
         print('type      : {}'.format(d['type']))
         print('name      : {}'.format(d['name']))
-        print('partner   : {} / {}'.format(d['partner'], TolinoCloud.partner_mapping[d['partner']]))
+        print('partner   : {} / {}'.format(d['partner'], TolinoCloud.partner_name[d['partner']]))
         print('registered: {}'.format(datetime.datetime.fromtimestamp(d['registered']/1000.0).strftime('%c')))
         print('last use  : {}'.format(datetime.datetime.fromtimestamp(d['lastusage']/1000.0).strftime('%c')))
 
@@ -135,8 +135,8 @@ args = parser.parse_args(remaining_argv)
     
 if args.partner == 0:
     print('List of partner ids available:')
-    for partner_id, partner_name in TolinoCloud.partner_mapping.items():
-        print('{} : {}'.format(partner_id, partner_name))
+    for partner_id in sorted(TolinoCloud.partner_settings.keys()):
+        print('{} : {}'.format(partner_id, TolinoCloud.partner_name[partner_id]))
     sys.exit(1)
 
 if (not args.user) or (not args.password):
