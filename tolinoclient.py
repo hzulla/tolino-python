@@ -9,6 +9,7 @@ import argparse
 import json
 import sys
 import datetime
+import logging
 
 from tolinocloud import TolinoCloud
 
@@ -106,6 +107,7 @@ if args.config:
 parser.add_argument('--user', type=str, help='username (usually an email address)')
 parser.add_argument('--password', type=str, help='password')
 parser.add_argument('--partner', type=int, help='shop / partner id (use 0 for list)')
+parser.add_argument('--debug', action="store_true", help='log additional debugging info')
 
 subparsers = parser.add_subparsers()
 
@@ -132,6 +134,9 @@ s.add_argument('device_id')
 s.set_defaults(func=unregister)
 
 args = parser.parse_args(remaining_argv)
+
+if args.debug:
+    logging.basicConfig(level=logging.DEBUG)
     
 if args.partner == 0:
     print('List of partner ids available:')

@@ -30,6 +30,8 @@ import base64
 import requests
 import re
 from urllib.parse import urlparse, parse_qs
+import logging
+from pprint import pformat
 
 class TolinoException(Exception):
     pass
@@ -196,6 +198,19 @@ class TolinoCloud:
         self.partner_id = partner_id
         self.session = requests.session()
     
+    def _debug(self, r):
+        if logging.getLogger().getEffectiveLevel() >= logging.DEBUG:
+            logging.debug('-------------------- HTTP response --------------------')
+            logging.debug('status code: {}'.format(r.status_code))
+            logging.debug('cookies: {}'.format(pformat(r.cookies)))
+            logging.debug('headers: {}'.format(pformat(r.headers)))
+            try:
+                j = r.json()
+                logging.debug('json: {}'.format(pformat(j)))
+            except:
+                logging.debug('text: {}'.format(r.text))
+            logging.debug('-------------------------------------------------------')
+    
     def login(self, username, password):
         s = self.session;
         c = self.partner_settings[self.partner_id]
@@ -206,6 +221,7 @@ class TolinoCloud:
         data[c['login_form']['username']] = username
         data[c['login_form']['password']] = password
         r = s.post(c['login_url'], data, verify=False)
+        self._debug(r)
         if not c['login_cookie'] in s.cookies:
             raise TolinoException('login to {} failed.'.
                 format(self.partner_name[self.partner_id]))
@@ -214,6 +230,7 @@ class TolinoCloud:
         if 'tat_url' in c:
             try:
                 r = s.get(c['tat_url'], verify=False)
+                self._debug(r)
                 b64 = re.search(r'\?tat=(.*?)#library', r.text).group(1)
                 self.access_token = base64.b64decode(b64).decode('utf-8')
             except:
@@ -226,6 +243,7 @@ class TolinoCloud:
                 'scope'         : c['scope'],
                 'redirect_uri'  : c['reader_url']
             }, verify=False, allow_redirects=False)
+            self._debug(r)
             try:
                 params = parse_qs(urlparse(r.headers['Location']).query)
                 auth_code = params['code'][0]
@@ -240,6 +258,7 @@ class TolinoCloud:
                 'scope'        : c['scope'],
                 'redirect_uri' : c['reader_url']
             }, verify=False, allow_redirects=False)
+            self._debug(r)
             try:
                 j = r.json()
                 self.access_token = j['access_token']
@@ -260,10 +279,12 @@ class TolinoCloud:
                     'token'      : self.refresh_token
                 }
             )
+            self._debug(r)
             if r.status_code != 200:
                 raise TolinoException('logout failed.')
         else:
             r = s.post(c['logout_url'])
+            self._debug(r)
             if r.status_code != 200:
                 raise TolinoException('logout failed.')
 
@@ -289,6 +310,7 @@ class TolinoCloud:
                 'm_id'        : self.partner_id
             }
         )
+        self._debug(r)
         if r.status_code != 200:
             raise TolinoException('register {} failed.'.format(TolinoCloud.hardware_id))
         
@@ -315,6 +337,7 @@ class TolinoCloud:
                 'm_id'        : self.partner_id
             }
         )
+        self._debug(r)
         if r.status_code != 200:
             try:
                 j = r.json()
@@ -341,6 +364,7 @@ class TolinoCloud:
                 'm_id'        : self.partner_id
             }
         )
+        self._debug(r)
         if r.status_code != 200:
             raise TolinoException('device list request failed.')
 
@@ -394,6 +418,7 @@ class TolinoCloud:
                 'm_id'         : self.partner_id
             }
         )
+        self._debug(r)
         if r.status_code != 200:
             raise TolinoException('inventory list request failed.')
 
@@ -430,6 +455,7 @@ class TolinoCloud:
                 'm_id'         : self.partner_id
             }
         )
+        self._debug(r)
         if r.status_code != 200:
             raise TolinoException('file upload failed.')
 
@@ -453,6 +479,7 @@ class TolinoCloud:
                 'm_id'         : self.partner_id
             }
         )
+        self._debug(r)
         if r.status_code != 200:
             try:
                 j = r.json()
@@ -472,6 +499,7 @@ class TolinoCloud:
                 'm_id'         : self.partner_id
             }
         )
+        self._debug(r)
         if r.status_code != 200:
             raise TolinoException('download info request failed.')
 
@@ -497,6 +525,7 @@ class TolinoCloud:
                 'm_id'         : self.partner_id
             }
         )
+        self._debug(r)
         if r.status_code != 200:
             try:
                 j = r.json()
