@@ -100,7 +100,7 @@ class TolinoCloud:
     
     partner_settings = {
          3: {
-            'partner'          : 'Thalia.de',
+            # Thalia.de
             'client_id'        : 'webshop01',
             'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
             'signup_url'       : 'https://ssl.thalia.de/shop/home/kunde/neu/',
@@ -124,7 +124,7 @@ class TolinoCloud:
             'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
             },
          6: {
-            'partner'          : 'Buch.de',
+            # Buch.de'
             'client_id'        : 'webshop01',
             'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
             'signup_url'       : 'https://ssl.buch.de/shop/home/kunde/neu/',
@@ -148,7 +148,7 @@ class TolinoCloud:
             'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
             },
         13: {
-            'partner'          : 'Hugendubel.de',
+            # Hugendubel.de
             'client_id'        : '4c20de744aa8b83b79b692524c7ec6ae',
             'scope'            : 'ebook_library',
             'signup_url'       : 'https://www.hugendubel.de/go/my_my/my_newRegistration/',
