@@ -191,7 +191,36 @@ class TolinoCloud:
             'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
             'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
             'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
-        }
+        },
+         30: {
+            # Bücher.de'
+            'client_id'        : 'dte_ereader_01',
+            'scope'            : 'ebook_library',
+            'signup_url'       : 'https://www.buecher.de/go/my_my/my_newRegistration/',
+            'profile_url'      : 'https://www.buecher.de/go/my_my/my_data/',
+            'token_url'        : 'https://www.buecher.de/oauth2/token',
+            'revoke_url'       : 'https://www.buecher.de/oauth2/revoke',
+            'auth_url'         : 'https://www.buecher.de/oauth2/authorize',
+            'login_url'        : 'https://www.buecher.de/go/my_my/my_login/receiver_object/my_login/',
+            'login_form'       : {
+                'username' : 'form[login]',
+                'password' : 'form[password]',
+                'extra'    : {
+                    'form_send' : 1,
+                    'form[remember_email][]' : "yes"
+                }
+            },
+            'login_cookie'     : 'shop[email]',
+            'reader_url'       : 'https://webreader.buecher.de/library/library.html#!/library',
+            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/registerhw',
+            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+        },
+        
     }
 
     def __init__(self, partner_id):
