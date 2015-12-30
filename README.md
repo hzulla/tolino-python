@@ -1,4 +1,4 @@
-Access to tolino cloud with Python 3
+Access to tolino cloud with Python 3 (backported to Python 2.x - tested with 2.7.5)
 ====================================
 
 **TolinoCloud** is an inofficial implementation of the tolino cloud
