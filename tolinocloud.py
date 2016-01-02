@@ -1,3 +1,5 @@
+# coding: latin-1
+
 # tolino cloud access module
 
 # Hey, tolino developers at Telekom / T-Systems:
@@ -23,13 +25,12 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
 
-
 import platform
 import json
 import base64
 import requests
 import re
-from urllib.parse import urlparse, parse_qs
+from urlparse import urlparse, parse_qs
 import logging
 from pprint import pformat
 
