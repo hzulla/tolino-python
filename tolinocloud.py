@@ -1,4 +1,4 @@
-# tolino cloud access module
+#tolino cloud access module
 
 # Hey, tolino developers at Telekom / T-Systems:
 #
@@ -127,7 +127,9 @@ class TolinoCloud:
             'login_form'       : {
                 'username' : 'username',
                 'password' : 'password',
-                'extra'    : {}
+                'jumpId'   : 'jumpId',
+                'token'    : '_token',
+                'extra'    : {'cmd3' : ''}
              },
             'login_cookie'     : 'KUNDE',
             'tat_url'          : 'https://ssl.thalia.de/shop/home/ebook/anzeigen/',
@@ -217,10 +219,20 @@ class TolinoCloud:
         
         # Login with partner site
         # to retrieve site's cookies within browser session
+        r = s.get(c['login_url'])
+        jumpId=re.search(r'\?jumpId=(.*?)\"', r.text).group(1)
+        token=re.search(r'name=\"_token\" value=\"(.*?)\"', r.text).group(1)
+        logging.debug(jumpId)
+        logging.debug(token)
+        self._debug(r) 
         data = c['login_form']['extra']
         data[c['login_form']['username']] = username
         data[c['login_form']['password']] = password
+        data[c['login_form']['jumpId']] = jumpId
+        data[c['login_form']['token']] = token
         r = s.post(c['login_url'], data, verify=False)
+        logging.debug(data)
+        logging.debug(c['login_cookie'])
         self._debug(r)
         if not c['login_cookie'] in s.cookies:
             raise TolinoException('login to {} failed.'.
