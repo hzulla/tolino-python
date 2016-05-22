@@ -146,6 +146,7 @@ if args.partner == 0:
 
 if (not args.user) or (not args.password):
     print('Login credentials user/password required.')
+    parser.print_help()
     sys.exit(1)
 
 if not hasattr(args, 'func'):
