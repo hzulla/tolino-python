@@ -174,18 +174,21 @@ class TolinoCloud:
             'signup_url'       : 'https://www.hugendubel.de/go/my_my/my_newRegistration/',
             'profile_url'      : 'https://www.hugendubel.de/go/my_my/my_data/',
             'token_url'        : 'https://api.hugendubel.de/rest/oauth2/token',
-            'revoke_url'       : 'https://api.hugendubel.de/rest/oauth2/revoke',
-            'auth_url'         : 'https://www.hugendubel.de/oauth2/authorize',
-            'login_url'        : 'https://www.hugendubel.de/go/my_dry/my_login/lfa/login/receiver_object/my_login/',
+            # 'revoke_url'       : 'https://api.hugendubel.de/rest/oauth2/revoke',
+            'auth_url'         : 'https://www.hugendubel.de/oauth/authorize',
+            'login_url'        : 'https://www.hugendubel.de/de/account/login',
             'login_form'       : {
-                'username' : 'form[login]',
-                'password' : 'form[password]',
+                'username' : 'username',
+                'password' : 'password',
                 'extra'    : {
-                    'form_send' : 1
+                    'evaluate'           : 'true',
+                    'isOrdering'         : '',
+                    'isOneClickOrdering' : ''
                 }
             },
-            'login_cookie'     : 'shop[login]',
-            'reader_url'       : 'https://webreader.hugendubel.de/library/library.html#!/library',
+            'login_cookie'     : 'JSESSIONID',
+            'logout_url'       : 'https://www.hugendubel.de/de/account/logout',
+            'reader_url'       : 'https://webreader.hugendubel.de/library/index.html',
             'register_url'     : 'https://bosh.pageplace.de/bosh/rest/registerhw',
             'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
             'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
@@ -219,17 +222,18 @@ class TolinoCloud:
         
         # Login with partner site
         # to retrieve site's cookies within browser session
-        r = s.get(c['login_url'])
-        jumpId=re.search(r'\?jumpId=(.*?)\"', r.text).group(1)
-        token=re.search(r'name=\"_token\" value=\"(.*?)\"', r.text).group(1)
-        logging.debug(jumpId)
-        logging.debug(token)
-        self._debug(r) 
         data = c['login_form']['extra']
         data[c['login_form']['username']] = username
         data[c['login_form']['password']] = password
-        data[c['login_form']['jumpId']] = jumpId
-        data[c['login_form']['token']] = token
+        if 'jumpId' in c['login_form']:
+            r = s.get(c['login_url'])
+            jumpId=re.search(r'\?jumpId=(.*?)\"', r.text).group(1)
+            token=re.search(r'name=\"_token\" value=\"(.*?)\"', r.text).group(1)
+            logging.debug(jumpId)
+            logging.debug(token)
+            self._debug(r)
+            data[c['login_form']['jumpId']] = jumpId
+            data[c['login_form']['token']] = token
         r = s.post(c['login_url'], data, verify=False)
         logging.debug(data)
         logging.debug(c['login_cookie'])
