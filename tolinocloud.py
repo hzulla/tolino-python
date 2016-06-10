@@ -451,12 +451,14 @@ class TolinoCloud:
         except:
             raise TolinoException('inventory list request failed.')
     
-    def upload(self, filename):
+    def upload(self, filename, name = None, ext = None):
         s = self.session;
         c = self.partner_settings[self.partner_id]
 
-        name = filename.split('/')[-1]
-        ext = filename.split('.')[-1]
+        if name is None:
+            name = filename.split('/')[-1]
+        if ext is None:
+            ext = filename.split('.')[-1]
         
         mime = {
             'pdf'  : 'application/pdf',
