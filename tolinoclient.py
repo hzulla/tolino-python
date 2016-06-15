@@ -68,7 +68,7 @@ def upload(args):
     c = TolinoCloud(args.partner)
     c.login(args.user, args.password)
     c.register()
-    document_id = c.upload(args.filename)
+    document_id = c.upload(args.filename, args.name)
     c.unregister()
     c.logout()
     print('uploaded {} to tolino cloud as {}.'.format(args.filename, document_id))
@@ -117,6 +117,7 @@ s.set_defaults(func=inventory)
 
 s = subparsers.add_parser('upload', help='upload a file (must be either .pdf or .epub)')
 s.add_argument('filename', metavar='FILE')
+s.add_argument('--name', help='specify an alternative name')
 s.set_defaults(func=upload)
 
 s = subparsers.add_parser('download', help='download a document')
