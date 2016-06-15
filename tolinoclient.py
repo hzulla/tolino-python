@@ -10,6 +10,7 @@ import json
 import sys
 import datetime
 import logging
+from os.path import expanduser
 
 from tolinocloud import TolinoCloud
 
@@ -94,12 +95,12 @@ def delete(args):
 parser = argparse.ArgumentParser(
     description='cmd line client to access personal tolino cloud storage space.'
 )
-parser.add_argument('--config', metavar='FILE', default='.tolinoclientrc', help='config file (default: .tolinoclientrc)')
+parser.add_argument('--config', metavar='FILE', default='~/.tolinoclientrc', help='config file (default: .tolinoclientrc)')
 args, remaining_argv = parser.parse_known_args()
 
 if args.config:
     c = configparser.ConfigParser()
-    c.read([args.config])
+    c.read([expanduser(args.config)])
     if c.has_section('Defaults'):
         defaults = dict(c.items('Defaults'))
         parser.set_defaults(**defaults)
