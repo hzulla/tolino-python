@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # tolino cloud command line client
 # call without parameters for a brief help message
