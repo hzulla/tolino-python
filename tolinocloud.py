@@ -248,6 +248,7 @@ class TolinoCloud:
                 r = s.get(c['tat_url'], verify=False)
                 self._debug(r)
                 b64 = re.search(r'\?tat=(.*?)\"', r.text).group(1)
+                b64 = b64.replace('%3D', '=')
                 self.access_token = base64.b64decode(b64).decode('utf-8')
             except:
                 raise TolinoException('oauth access token request failed.')
