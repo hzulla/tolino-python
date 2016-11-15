@@ -241,15 +241,13 @@ class TolinoCloud:
         if not c['login_cookie'] in s.cookies:
             raise TolinoException('login to {} failed.'.
                 format(self.partner_name[self.partner_id]))
-
         auth_code = ""
         if 'tat_url' in c:
             try:
                 r = s.get(c['tat_url'], verify=False)
                 self._debug(r)
-                b64 = re.search(r'\?tat=(.*?)\"', r.text).group(1)
-                b64 = b64.replace('%3D', '=')
-                self.access_token = base64.b64decode(b64).decode('utf-8')
+                b64 = re.search(r'\&tat=(.*?)%3D', r.text).group(1)
+                self.access_token = base64.b64decode(b64+'==').decode('utf-8')
             except:
                 raise TolinoException('oauth access token request failed.')
         else:
