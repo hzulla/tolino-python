@@ -322,7 +322,7 @@ class TolinoCloud:
                 'content-type': 'application/json',
                 't_auth_token': self.access_token,
                 'hardware_id' : TolinoCloud.hardware_id,
-                'm_id'        : self.partner_id
+                'm_id'        : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -349,7 +349,7 @@ class TolinoCloud:
             headers = {
                 'content-type': 'application/json',
                 't_auth_token': self.access_token,
-                'm_id'        : self.partner_id
+                'm_id'        : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -376,7 +376,7 @@ class TolinoCloud:
             headers = {
                 'content-type': 'application/json',
                 't_auth_token': self.access_token,
-                'm_id'        : self.partner_id
+                'm_id'        : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -430,7 +430,7 @@ class TolinoCloud:
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : self.partner_id
+                'm_id'         : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -469,7 +469,7 @@ class TolinoCloud:
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : self.partner_id
+                'm_id'         : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -493,7 +493,7 @@ class TolinoCloud:
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : self.partner_id
+                'm_id'         : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -513,7 +513,7 @@ class TolinoCloud:
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : self.partner_id
+                'm_id'         : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -539,7 +539,7 @@ class TolinoCloud:
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : self.partner_id
+                'm_id'         : str(self.partner_id)
             }
         )
         self._debug(r)
