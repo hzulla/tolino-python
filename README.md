@@ -61,6 +61,11 @@ Hey, tolino developers at Telekom / T-Systems, please look at
 the comments in tolinocloud.py. It'd be really nice to get the
 specifications for the REST API. Thanks!
 
+Command Line Completion
+=======================
+
+If you like command line completion [fish](https://fishshell.com/), you can copy the file `tolinoclient.py.fish` into `~/.config/fish/completions/` (create the directory if needed).
+
 License
 =======
 
