@@ -40,7 +40,7 @@ class TolinoException(Exception):
 class TolinoCloud:
 
     def _hardware_id():
-    
+
         # tolino wants to know a few details about the HTTP client hardware
         # when it connects.
         #
@@ -51,20 +51,20 @@ class TolinoCloud:
         # 33 = browser id
         # 44 = browser version
         # X  = the result of a fingerprinting image
-    
+
         os_id = {
             'Windows' : '1',
             'Darwin'  : '2',
             'Linux'   : '3'
             }.get(platform.system(), 'x')
-        
+
         # The hardware id contains some info about the browser
         #
         # Hey, tolino developers: Let me know which id values to use here
         engine_id  = 'x'
         browser_id = 'xx'
         version_id = '00'
-        
+
         # For some odd reason, the tolino javascript draws the text
         # "www.tolino.de" and a rectangle filled with the offical Telekom
         # magenta #E20074 (http://de.wikipedia.org/wiki/Magenta_%28Farbe%29)
@@ -73,9 +73,9 @@ class TolinoCloud:
         # but it's not quite clear how this would help the tolino API.
         #
         # Hey, tolino developers: Let me know what you need here.
-    
+
         fingerprint = 'ABCDEFGHIJKLMNOPQR'
-        
+
         return (os_id +
             engine_id +
             browser_id +
@@ -92,7 +92,7 @@ class TolinoCloud:
             'h')
 
     hardware_id = _hardware_id()
-    
+
     partner_name = {
          1 : 'Telekom',
          3 : 'Thalia.de',
@@ -115,27 +115,32 @@ class TolinoCloud:
         81 : 'eBook.de',
         90 : 'ibs.it'
     }
-    
+
     partner_settings = {
-         3: {
+        3: {
             # Thalia.de
             'client_id'        : 'webshop01',
             'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
-            'signup_url'       : 'https://ssl.thalia.de/shop/home/kunde/neu/',
-            'profile_url'      : 'https://ssl.thalia.de/shop/home/kunde/',
-            'login_url'        : 'https://ssl.thalia.de/shop/home/login/dologin/',
+            'signup_url'       : 'https://www.thalia.de/shop/home/kunde/neu/',
+            'profile_url'      : 'https://www.thalia.de/shop/home/kunde/',
+            'token_url'        : 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/token',
+            'login_form_url'   : 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/login',
+            'x_buchde.skin_id' : '17',
+            'x_buchde.mandant_id' :'2',
+            'auth_url'         : 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/authorize',
+            'login_url'        : 'https://auth.buch.de/de.thalia.ecp.authservice.application/login.do',
+            # 'revoke_url'       : 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/revoke',
             'login_form'       : {
-                'username' : 'username',
-                'password' : 'password',
-                'jumpId'   : 'jumpId',
-                'token'    : '_token',
-                'extra'    : {'cmd3' : ''}
+                'username' : 'j_username',
+                'password' : 'j_password',
+                'extra'    : {
+                    'login' : ''
+                    }
              },
-            'login_cookie'     : 'KUNDE',
-            'tat_url'          : 'https://ssl.thalia.de/shop/home/ebook/anzeigen/',
-            'logout_url'       : 'https://ssl.thalia.de/shop/home/login/logout/',
-            'reader_url'       : 'https://html5reader.thalia.de/library/library.html#!/library',
-            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/registerhw',
+            'login_cookie'     : 'JSESSIONID',
+            'logout_url'       : 'https://www.thalia.de/shop/home/login/logout/',
+            'reader_url'       : 'https://webreader.mytolino.com/library/index.html#/mybooks/titles',
+            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
             'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
             'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
             'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
@@ -202,7 +207,7 @@ class TolinoCloud:
     def __init__(self, partner_id):
         self.partner_id = partner_id
         self.session = requests.session()
-    
+
     def _debug(self, r):
         if logging.getLogger().getEffectiveLevel() >= logging.DEBUG:
             logging.debug('-------------------- HTTP response --------------------')
@@ -215,26 +220,26 @@ class TolinoCloud:
             except:
                 logging.debug('text: {}'.format(r.text))
             logging.debug('-------------------------------------------------------')
-    
+
     def login(self, username, password):
         s = self.session;
         c = self.partner_settings[self.partner_id]
-        
+
         # Login with partner site
         # to retrieve site's cookies within browser session
+        if 'login_form_url' in c:
+            r = s.get(c['login_form_url'], params = {
+                'client_id'     : c['client_id'],
+                'response_type' : 'code',
+                'scope'         : c['scope'],
+                'redirect_uri'  : c['reader_url'],
+                'x_buchde.skin_id': c['x_buchde.skin_id'],
+                'x_buchde.mandant_id' : c['x_buchde.mandant_id']
+            }, verify=True, allow_redirects=False)
         data = c['login_form']['extra']
         data[c['login_form']['username']] = username
         data[c['login_form']['password']] = password
-        if 'jumpId' in c['login_form']:
-            r = s.get(c['login_url'])
-            jumpId=re.search(r'\?jumpId=(.*?)\"', r.text).group(1)
-            token=re.search(r'name=\"_token\" value=\"(.*?)\"', r.text).group(1)
-            logging.debug(jumpId)
-            logging.debug(token)
-            self._debug(r)
-            data[c['login_form']['jumpId']] = jumpId
-            data[c['login_form']['token']] = token
-        r = s.post(c['login_url'], data, verify=False)
+        r = s.post(c['login_url'], data=data, verify=True)
         logging.debug(data)
         logging.debug(c['login_cookie'])
         self._debug(r)
@@ -244,7 +249,7 @@ class TolinoCloud:
         auth_code = ""
         if 'tat_url' in c:
             try:
-                r = s.get(c['tat_url'], verify=False)
+                r = s.get(c['tat_url'], verify=True)
                 self._debug(r)
                 b64 = re.search(r'\&tat=(.*?)%3D', r.text).group(1)
                 self.access_token = base64.b64decode(b64+'==').decode('utf-8')
@@ -252,19 +257,23 @@ class TolinoCloud:
                 raise TolinoException('oauth access token request failed.')
         else:
             # Request OAUTH code
-            r = s.get(c['auth_url'], params = {
+            params = {
                 'client_id'     : c['client_id'],
                 'response_type' : 'code',
                 'scope'         : c['scope'],
                 'redirect_uri'  : c['reader_url']
-            }, verify=False, allow_redirects=False)
+            }
+            if 'login_form_url' in c:
+                params['x_buchde.skin_id'] = c['x_buchde.skin_id']
+                params['x_buchde.mandant_id'] = c['x_buchde.mandant_id']
+            r = s.get(c['auth_url'], params=params, verify=True, allow_redirects=False)
             self._debug(r)
             try:
                 params = parse_qs(urlparse(r.headers['Location']).query)
                 auth_code = params['code'][0]
             except:
                 raise TolinoException('oauth code request failed.')
-        
+
             # Fetch OAUTH access token
             r = s.post(c['token_url'], data = {
                 'client_id'    : c['client_id'],
@@ -272,7 +281,7 @@ class TolinoCloud:
                 'code'         : auth_code,
                 'scope'        : c['scope'],
                 'redirect_uri' : c['reader_url']
-            }, verify=False, allow_redirects=False)
+            }, verify=True, allow_redirects=False)
             self._debug(r)
             try:
                 j = r.json()
@@ -281,7 +290,7 @@ class TolinoCloud:
                 self.token_expires = int(j['expires_in'])
             except:
                 raise TolinoException('oauth access token request failed.')
-    
+
     def logout(self):
         s = self.session;
         c = self.partner_settings[self.partner_id]
@@ -310,25 +319,21 @@ class TolinoCloud:
 
         # Register our hardware
         r = s.post(c['register_url'],
-            data = json.dumps({
-                'initAppRequest':{
-                    'hardware_id'   : TolinoCloud.hardware_id,
-                    'hardware_type' : 'HTML5_1',
-                    'client_type'   : 'HTML5_1',
-                    'hardware_name' : 'other'
-                }
-            }),
-            headers = {
+              data = json.dumps({'hardware_name':'other'}),
+              headers = {
                 'content-type': 'application/json',
                 't_auth_token': self.access_token,
                 'hardware_id' : TolinoCloud.hardware_id,
-                'm_id'        : str(self.partner_id)
-            }
+                'reseller_id' : str(self.partner_id),
+                'client_type': 'TOLINO_WEBREADER',
+                'client_version': '4.4.1',
+                'hardware_type': 'HTML5'
+              }
         )
         self._debug(r)
         if r.status_code != 200:
             raise TolinoException('register {} failed.'.format(TolinoCloud.hardware_id))
-        
+
     def unregister(self, device_id = hardware_id):
         s = self.session;
         c = self.partner_settings[self.partner_id]
@@ -349,7 +354,7 @@ class TolinoCloud:
             headers = {
                 'content-type': 'application/json',
                 't_auth_token': self.access_token,
-                'm_id'        : str(self.partner_id)
+                'reseller_id' : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -376,7 +381,7 @@ class TolinoCloud:
             headers = {
                 'content-type': 'application/json',
                 't_auth_token': self.access_token,
-                'm_id'        : str(self.partner_id)
+                'reseller_id'        : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -420,7 +425,7 @@ class TolinoCloud:
             return md
         except:
             raise TolinoException('could not parse metadata')
-        
+
     def inventory(self):
         s = self.session;
         c = self.partner_settings[self.partner_id]
@@ -430,7 +435,7 @@ class TolinoCloud:
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : str(self.partner_id)
+                'reseller_id'  : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -449,7 +454,7 @@ class TolinoCloud:
             return inv
         except:
             raise TolinoException('inventory list request failed.')
-    
+
     def upload(self, filename, name = None, ext = None):
         s = self.session;
         c = self.partner_settings[self.partner_id]
@@ -458,18 +463,18 @@ class TolinoCloud:
             name = filename.split('/')[-1]
         if ext is None:
             ext = filename.split('.')[-1]
-        
+
         mime = {
             'pdf'  : 'application/pdf',
             'epub' : 'application/epub+zip'
         }.get(ext.lower(), 'application/pdf')
-        
+
         r = s.post(c['upload_url'],
             files = [('file', (name, open(filename, 'rb'), mime))],
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : str(self.partner_id)
+                'reseller_id'         : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -481,7 +486,7 @@ class TolinoCloud:
             return j['metadata']['deliverableId']
         except:
             raise TolinoException('file upload failed.')
-    
+
     def delete(self, id):
         s = self.session;
         c = self.partner_settings[self.partner_id]
@@ -493,7 +498,7 @@ class TolinoCloud:
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : str(self.partner_id)
+                'reseller_id'   : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -513,7 +518,7 @@ class TolinoCloud:
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : str(self.partner_id)
+                'reseller_id'  : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -539,7 +544,7 @@ class TolinoCloud:
             headers = {
                 't_auth_token' : self.access_token,
                 'hardware_id'  : TolinoCloud.hardware_id,
-                'm_id'         : str(self.partner_id)
+                'reseller_id'  : str(self.partner_id)
             }
         )
         self._debug(r)
@@ -553,9 +558,9 @@ class TolinoCloud:
 
         filename = path + '/' + di['filename'] if path else di['filename']
         with open(filename, 'wb') as f:
-            for chunk in r.iter_content(chunk_size=1024): 
+            for chunk in r.iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
             f.flush()
-        
+
         return filename
