@@ -148,6 +148,37 @@ class TolinoCloud:
             'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
             'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
             },
+        4: {
+            # Thalia.at
+            'client_id'        : 'webshop01',
+            'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
+            'signup_url'       : 'https://www.thalia.at/shop/home/kunde/neu/',
+            'profile_url'      : 'https://www.thalia.at/shop/home/kunde/',
+            'token_url'        : 'https://www.thalia.at/de.buch.appservices/api/4004/oauth2/token',
+            'login_form_url'   : 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/login',
+            'x_buchde.skin_id' : '17',
+            'x_buchde.mandant_id' :'4',
+            'auth_url'         : 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/authorize',
+            'login_url'        : 'https://auth.buch.de/de.thalia.ecp.authservice.application/login.do',
+            # 'revoke_url'       : 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/revoke',
+            'login_form'       : {
+                'username' : 'j_username',
+                'password' : 'j_password',
+                'extra'    : {
+                    'login' : ''
+                    }
+             },
+            'login_cookie'     : 'JSESSIONID',
+            'logout_url'       : 'https://www.thalia.at/shop/home/show/',
+            'reader_url'       : 'https://webreader.mytolino.com/library/index.html#/mybooks/titles',
+            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
+            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+            },
          6: {
             # Buch.de'
             'client_id'        : 'webshop01',
