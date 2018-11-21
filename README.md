@@ -41,6 +41,7 @@ Status
 
 Works with these partners:
 - Thalia.de (3)
+- Thalia.at (4)
 - Buch.de (6)
 - Hugendubel.de (13)
 
