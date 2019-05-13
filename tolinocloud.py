@@ -232,6 +232,35 @@ class TolinoCloud:
             'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
             'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
             'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+        },
+        30: {
+            # buecher.de
+            'client_id'        : 'dte_ereader_app_01',
+            'scope'            : 'ebook_library',
+            'signup_url'       : 'https://www.buecher.de/go/my_dry/my_register_aos/',
+            'profile_url'      : 'https://www.buecher.de/go/my_dry/my_login/receiver_object/my_login/',
+            'token_url'        : 'https://www.buecher.de/oauth2/token',
+            'revoke_url'       : 'https://www.buecher.de/oauth2/revoke',
+            'auth_url'         : 'https://www.buecher.de/oauth2/authorize',
+            'login_url'        : 'https://www.buecher.de/go/my_dry/my_login/',
+            'login_form'       : {
+                'username' : 'form[login]',
+                'password' : 'form[password]',
+                'extra'    : {
+                    'form_send' : '1'
+                }
+            },
+            'x_buecherde.skin_id' : 'de_dte_tolino',
+            'login_cookie'     : 'session',
+            'logout_url'       : 'https://www.buecher.de/go/my_dry/my_logout/',
+            'reader_url'       : 'https://webreader.mytolino.com/library/',
+            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
+            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
         }
     }
 

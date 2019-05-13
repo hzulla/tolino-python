@@ -44,6 +44,7 @@ Works with these partners:
 - Thalia.at (4)
 - Buch.de (6)
 - Hugendubel.de (13)
+- Buecher.de (30)
 
 (More may be added in the future.)
 
