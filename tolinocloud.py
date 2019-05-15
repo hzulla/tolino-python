@@ -137,7 +137,7 @@ class TolinoCloud:
                     'login' : ''
                     }
              },
-            'login_cookie'     : 'JSESSIONID',
+            'login_cookie'     : 'OAUTH-JSESSIONID',
             'logout_url'       : 'https://www.thalia.de/shop/home/login/logout/',
             'reader_url'       : 'https://webreader.mytolino.com/library/index.html#/mybooks/titles',
             'register_url'     : 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
