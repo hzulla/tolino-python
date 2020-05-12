@@ -1,4 +1,4 @@
-#tolino cloud access module
+# tolino cloud access module
 
 # Hey, tolino developers at Telekom / T-Systems:
 #
@@ -33,6 +33,7 @@ from urllib.parse import urlparse, parse_qs
 import logging
 from pprint import pformat
 
+
 class TolinoException(Exception):
     pass
 
@@ -53,15 +54,15 @@ class TolinoCloud:
         # X  = the result of a fingerprinting image
 
         os_id = {
-            'Windows' : '1',
-            'Darwin'  : '2',
-            'Linux'   : '3'
-            }.get(platform.system(), 'x')
+            'Windows': '1',
+            'Darwin': '2',
+            'Linux': '3'
+        }.get(platform.system(), 'x')
 
         # The hardware id contains some info about the browser
         #
         # Hey, tolino developers: Let me know which id values to use here
-        engine_id  = 'x'
+        engine_id = 'x'
         browser_id = 'xx'
         version_id = '00'
 
@@ -77,190 +78,221 @@ class TolinoCloud:
         fingerprint = 'ABCDEFGHIJKLMNOPQR'
 
         return (os_id +
-            engine_id +
-            browser_id +
-            fingerprint[0:1] +
-            '-' +
-            version_id +
-            fingerprint[1:4] +
-            '-' +
-            fingerprint[4:9] +
-            '-' +
-            fingerprint[9:14] +
-            '-' +
-            fingerprint[14:18] +
-            'h')
+                engine_id +
+                browser_id +
+                fingerprint[0:1] +
+                '-' +
+                version_id +
+                fingerprint[1:4] +
+                '-' +
+                fingerprint[4:9] +
+                '-' +
+                fingerprint[9:14] +
+                '-' +
+                fingerprint[14:18] +
+                'h')
 
     hardware_id = _hardware_id()
 
     partner_name = {
-         1 : 'Telekom',
-         3 : 'Thalia.de',
-         4 : 'Thalia.at',
-         5 : 'Thalia.ch',
-         6 : 'Buch.de',
-         7 : 'buch.ch',
-         8 : 'Books.ch',
-        10 : 'Weltbild.de',
-        11 : 'Weltbild.at',
-        12 : 'Weltbild.ch',
-        13 : 'Hugendubel.de',
-        20 : 'derclub.de',
-        21 : 'otto-media.de',
-        22 : 'donauland.at',
-        30 : 'bücher.de',
-        40 : 'Bild.de', # defunct?
-        60 : 'StandaardBoekhandel.be',
-        80 : 'Libri.de',
-        81 : 'eBook.de',
-        90 : 'ibs.it'
+        1: 'Telekom',
+        3: 'Thalia.de',
+        4: 'Thalia.at',
+        5: 'Thalia.ch',
+        6: 'Buch.de',
+        7: 'buch.ch',
+        8: 'books.ch / orellfuessli.ch',
+        10: 'Weltbild.de',
+        11: 'Weltbild.at',
+        12: 'Weltbild.ch',
+        13: 'Hugendubel.de',
+        20: 'derclub.de',
+        21: 'otto-media.de',
+        22: 'donauland.at',
+        30: 'bücher.de',
+        40: 'Bild.de',  # defunct?
+        60: 'StandaardBoekhandel.be',
+        80: 'Libri.de',
+        81: 'eBook.de',
+        90: 'ibs.it'
     }
 
     partner_settings = {
         3: {
             # Thalia.de
-            'client_id'        : 'webshop01',
-            'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
-            'signup_url'       : 'https://www.thalia.de/shop/home/kunde/neu/',
-            'profile_url'      : 'https://www.thalia.de/shop/home/kunde/',
-            'token_url'        : 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/token',
-            'login_form_url'   : 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/login',
-            'x_buchde.skin_id' : '17',
-            'x_buchde.mandant_id' :'2',
-            'auth_url'         : 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/authorize',
-            'login_url'        : 'https://auth.buch.de/de.thalia.ecp.authservice.application/login.do',
+            'client_id': 'webshop01',
+            'scope': 'SCOPE_BOSH SCOPE_BUCHDE',
+            'signup_url': 'https://www.thalia.de/shop/home/kunde/neu/',
+            'profile_url': 'https://www.thalia.de/shop/home/kunde/',
+            'token_url': 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/token',
+            'login_form_url': 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/login',
+            'x_buchde.skin_id': '17',
+            'x_buchde.mandant_id': '2',
+            'auth_url': 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/authorize',
+            'login_url': 'https://auth.buch.de/de.thalia.ecp.authservice.application/login.do',
             # 'revoke_url'       : 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/revoke',
-            'login_form'       : {
-                'username' : 'j_username',
-                'password' : 'j_password',
-                'extra'    : {
-                    'login' : ''
-                    }
-             },
-            'login_cookie'     : 'OAUTH-JSESSIONID',
-            'logout_url'       : 'https://www.thalia.de/shop/home/login/logout/',
-            'reader_url'       : 'https://webreader.mytolino.com/library/index.html#/mybooks/titles',
-            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
-            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
-            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
-            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
-            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
-            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
-            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+            'login_form': {
+                'username': 'j_username',
+                'password': 'j_password',
+                'extra': {
+                    'login': ''
+                }
             },
+            'login_cookie': 'OAUTH-JSESSIONID',
+            'logout_url': 'https://www.thalia.de/shop/home/login/logout/',
+            'reader_url': 'https://webreader.mytolino.com/library/index.html#/mybooks/titles',
+            'register_url': 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
+            'devices_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url': 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url': 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url': 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url': 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+        },
         4: {
             # Thalia.at
-            'client_id'        : 'webshop01',
-            'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
-            'signup_url'       : 'https://www.thalia.at/shop/home/kunde/neu/',
-            'profile_url'      : 'https://www.thalia.at/shop/home/kunde/',
-            'token_url'        : 'https://www.thalia.at/de.buch.appservices/api/4004/oauth2/token',
-            'login_form_url'   : 'https://www.thalia.at/de.thalia.ecp.authservice.application/oauth2/login',
-            'x_buchde.skin_id' : '17',
-            'x_buchde.mandant_id' : '4',
-            'auth_url'         : 'https://www.thalia.at/de.thalia.ecp.authservice.application/oauth2/authorize',
-            'login_url'        : 'https://www.thalia.at/de.thalia.ecp.authservice.application/login.do',
+            'client_id': 'webshop01',
+            'scope': 'SCOPE_BOSH SCOPE_BUCHDE',
+            'signup_url': 'https://www.thalia.at/shop/home/kunde/neu/',
+            'profile_url': 'https://www.thalia.at/shop/home/kunde/',
+            'token_url': 'https://www.thalia.at/de.buch.appservices/api/4004/oauth2/token',
+            'login_form_url': 'https://www.thalia.at/de.thalia.ecp.authservice.application/oauth2/login',
+            'x_buchde.skin_id': '17',
+            'x_buchde.mandant_id': '4',
+            'auth_url': 'https://www.thalia.at/de.thalia.ecp.authservice.application/oauth2/authorize',
+            'login_url': 'https://www.thalia.at/de.thalia.ecp.authservice.application/login.do',
             # 'revoke_url'       : 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/revoke',
-            'login_form'       : {
-                'username' : 'j_username',
-                'password' : 'j_password',
-                'extra'    : {
-                    'login' : ''
+            'login_form': {
+                'username': 'j_username',
+                'password': 'j_password',
+                'extra': {
+                    'login': ''
                 }
-             },
-            'login_cookie'     : 'OAUTH-JSESSIONID',
-            'logout_url'       : 'https://www.thalia.at/shop/home/show/',
-            'reader_url'       : 'https://webreader.mytolino.com/library/index.html#/mybooks/titles',
-            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
-            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
-            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
-            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
-            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
-            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
-            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
             },
-         6: {
+            'login_cookie': 'OAUTH-JSESSIONID',
+            'logout_url': 'https://www.thalia.at/shop/home/show/',
+            'reader_url': 'https://webreader.mytolino.com/library/index.html#/mybooks/titles',
+            'register_url': 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
+            'devices_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url': 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url': 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url': 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url': 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+        },
+        6: {
             # Buch.de'
-            'client_id'        : 'webshop01',
-            'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
-            'signup_url'       : 'https://ssl.buch.de/shop/home/kunde/neu/',
-            'profile_url'      : 'https://ssl.buch.de/shop/home/kunde/',
-            'login_url'        : 'https://ssl.buch.de/shop/home/login/dologin/',
-            'login_form'       : {
-                'username' : 'username',
-                'password' : 'password',
-                'extra'    : {}
-             },
-            'login_cookie'     : 'KUNDE',
-            'tat_url'          : 'https://ssl.buch.de/shop/home/ebook/anzeigen/',
-            'logout_url'       : 'https://ssl.buch.de/shop/home/login/logout/',
-            'reader_url'       : 'https://html5reader.buch.de/library/library.html#!/library',
-            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/registerhw',
-            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
-            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
-            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
-            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
-            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
-            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+            'client_id': 'webshop01',
+            'scope': 'SCOPE_BOSH SCOPE_BUCHDE',
+            'signup_url': 'https://ssl.buch.de/shop/home/kunde/neu/',
+            'profile_url': 'https://ssl.buch.de/shop/home/kunde/',
+            'login_url': 'https://ssl.buch.de/shop/home/login/dologin/',
+            'login_form': {
+                'username': 'username',
+                'password': 'password',
+                'extra': {}
             },
+            'login_cookie': 'KUNDE',
+            'tat_url': 'https://ssl.buch.de/shop/home/ebook/anzeigen/',
+            'logout_url': 'https://ssl.buch.de/shop/home/login/logout/',
+            'reader_url': 'https://html5reader.buch.de/library/library.html#!/library',
+            'register_url': 'https://bosh.pageplace.de/bosh/rest/registerhw',
+            'devices_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url': 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url': 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url': 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url': 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+        },
+        8: {
+            # books.ch / orellfuessli.ch
+            'client_id': 'webreader',
+            'scope': 'SCOPE_BOSH',
+            'signup_url': 'https://www.orellfuessli.ch/registrierung/privatkunde',
+            'profile_url': 'https://www.orellfuessli.ch/shop/home/kunde/',
+            'token_url': 'https://www.orellfuessli.ch/auth/oauth2/token',
+            'login_form_url': 'https://www.orellfuessli.ch/de.thalia.ecp.authservice.application/oauth2/login',
+            'x_buchde.skin_id': '17',
+            'x_buchde.mandant_id': '37',
+            'auth_url': 'https://www.orellfuessli.ch/de.thalia.ecp.authservice.application/oauth2/authorize',
+            'login_url': 'https://www.orellfuessli.ch/de.thalia.ecp.authservice.application/login.do',
+            'revoke_url': 'https://www.orellfuessli.ch//auth/oauth2/revoke',
+            'login_form': {
+                'username': 'j_username',
+                'password': 'j_password',
+                'extra': {
+                    'login': ''
+                }
+            },
+            'login_cookie': 'OAUTH-JSESSIONID',
+            'logout_url': 'https://www.orellfuessli.ch/shop/home/login/logout/',
+            'reader_url': 'https://webreader.mytolino.com/library/index.html#/mybooks/titles',
+            'register_url': 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
+            'devices_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url': 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url': 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url': 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url': 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+        },
         13: {
             # Hugendubel.de
-            'client_id'        : '4c20de744aa8b83b79b692524c7ec6ae',
-            'scope'            : 'ebook_library',
-            'signup_url'       : 'https://www.hugendubel.de/go/my_my/my_newRegistration/',
-            'profile_url'      : 'https://www.hugendubel.de/go/my_my/my_data/',
-            'token_url'        : 'https://api.hugendubel.de/rest/oauth2/token',
+            'client_id': '4c20de744aa8b83b79b692524c7ec6ae',
+            'scope': 'ebook_library',
+            'signup_url': 'https://www.hugendubel.de/go/my_my/my_newRegistration/',
+            'profile_url': 'https://www.hugendubel.de/go/my_my/my_data/',
+            'token_url': 'https://api.hugendubel.de/rest/oauth2/token',
             # 'revoke_url'       : 'https://api.hugendubel.de/rest/oauth2/revoke',
-            'auth_url'         : 'https://www.hugendubel.de/oauth/authorize',
-            'login_url'        : 'https://www.hugendubel.de/de/account/login',
-            'login_form'       : {
-                'username' : 'username',
-                'password' : 'password',
-                'extra'    : {
-                    'evaluate'           : 'true',
-                    'isOrdering'         : '',
-                    'isOneClickOrdering' : ''
+            'auth_url': 'https://www.hugendubel.de/oauth/authorize',
+            'login_url': 'https://www.hugendubel.de/de/account/login',
+            'login_form': {
+                'username': 'username',
+                'password': 'password',
+                'extra': {
+                    'evaluate': 'true',
+                    'isOrdering': '',
+                    'isOneClickOrdering': ''
                 }
             },
-            'login_cookie'     : 'JSESSIONID',
-            'logout_url'       : 'https://www.hugendubel.de/de/account/logout',
-            'reader_url'       : 'https://webreader.hugendubel.de/library/index.html',
-            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/registerhw',
-            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
-            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
-            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
-            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
-            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
-            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+            'login_cookie': 'JSESSIONID',
+            'logout_url': 'https://www.hugendubel.de/de/account/logout',
+            'reader_url': 'https://webreader.hugendubel.de/library/index.html',
+            'register_url': 'https://bosh.pageplace.de/bosh/rest/registerhw',
+            'devices_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url': 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url': 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url': 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url': 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
         },
         30: {
             # buecher.de
-            'client_id'        : 'dte_ereader_app_01',
-            'scope'            : 'ebook_library',
-            'signup_url'       : 'https://www.buecher.de/go/my_dry/my_register_aos/',
-            'profile_url'      : 'https://www.buecher.de/go/my_dry/my_login/receiver_object/my_login/',
-            'token_url'        : 'https://www.buecher.de/oauth2/token',
-            'revoke_url'       : 'https://www.buecher.de/oauth2/revoke',
-            'auth_url'         : 'https://www.buecher.de/oauth2/authorize',
-            'login_url'        : 'https://www.buecher.de/go/my_dry/my_login/',
-            'login_form'       : {
-                'username' : 'form[login]',
-                'password' : 'form[password]',
-                'extra'    : {
-                    'form_send' : '1'
+            'client_id': 'dte_ereader_app_01',
+            'scope': 'ebook_library',
+            'signup_url': 'https://www.buecher.de/go/my_dry/my_register_aos/',
+            'profile_url': 'https://www.buecher.de/go/my_dry/my_login/receiver_object/my_login/',
+            'token_url': 'https://www.buecher.de/oauth2/token',
+            'revoke_url': 'https://www.buecher.de/oauth2/revoke',
+            'auth_url': 'https://www.buecher.de/oauth2/authorize',
+            'login_url': 'https://www.buecher.de/go/my_dry/my_login/',
+            'login_form': {
+                'username': 'form[login]',
+                'password': 'form[password]',
+                'extra': {
+                    'form_send': '1'
                 }
             },
-            'x_buecherde.skin_id' : 'de_dte_tolino',
-            'login_cookie'     : 'session',
-            'logout_url'       : 'https://www.buecher.de/go/my_dry/my_logout/',
-            'reader_url'       : 'https://webreader.mytolino.com/library/',
-            'register_url'     : 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
-            'devices_url'      : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
-            'unregister_url'   : 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
-            'upload_url'       : 'https://bosh.pageplace.de/bosh/rest/upload',
-            'delete_url'       : 'https://bosh.pageplace.de/bosh/rest/deletecontent',
-            'inventory_url'    : 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
-            'downloadinfo_url' : 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
+            'x_buecherde.skin_id': 'de_dte_tolino',
+            'login_cookie': 'session',
+            'logout_url': 'https://www.buecher.de/go/my_dry/my_logout/',
+            'reader_url': 'https://webreader.mytolino.com/library/',
+            'register_url': 'https://bosh.pageplace.de/bosh/rest/v2/registerhw',
+            'devices_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/list',
+            'unregister_url': 'https://bosh.pageplace.de/bosh/rest/handshake/devices/delete',
+            'upload_url': 'https://bosh.pageplace.de/bosh/rest/upload',
+            'delete_url': 'https://bosh.pageplace.de/bosh/rest/deletecontent',
+            'inventory_url': 'https://bosh.pageplace.de/bosh/rest/inventory/delta',
+            'downloadinfo_url': 'https://bosh.pageplace.de/bosh/rest//cloud/downloadinfo/{}/{}/type/external-download'
         }
     }
 
@@ -288,13 +320,13 @@ class TolinoCloud:
         # Login with partner site
         # to retrieve site's cookies within browser session
         if 'login_form_url' in c:
-            r = s.get(c['login_form_url'], params = {
-                'client_id'     : c['client_id'],
-                'response_type' : 'code',
-                'scope'         : c['scope'],
-                'redirect_uri'  : c['reader_url'],
+            r = s.get(c['login_form_url'], params={
+                'client_id': c['client_id'],
+                'response_type': 'code',
+                'scope': c['scope'],
+                'redirect_uri': c['reader_url'],
                 'x_buchde.skin_id': c['x_buchde.skin_id'],
-                'x_buchde.mandant_id' : c['x_buchde.mandant_id']
+                'x_buchde.mandant_id': c['x_buchde.mandant_id']
             }, verify=True, allow_redirects=False)
         data = c['login_form']['extra']
         data[c['login_form']['username']] = username
@@ -305,23 +337,23 @@ class TolinoCloud:
         self._debug(r)
         if not c['login_cookie'] in s.cookies:
             raise TolinoException('login to {} failed.'.
-                format(self.partner_name[self.partner_id]))
+                                  format(self.partner_name[self.partner_id]))
         auth_code = ""
         if 'tat_url' in c:
             try:
                 r = s.get(c['tat_url'], verify=True)
                 self._debug(r)
                 b64 = re.search(r'\&tat=(.*?)%3D', r.text).group(1)
-                self.access_token = base64.b64decode(b64+'==').decode('utf-8')
+                self.access_token = base64.b64decode(b64 + '==').decode('utf-8')
             except:
                 raise TolinoException('oauth access token request failed.')
         else:
             # Request OAUTH code
             params = {
-                'client_id'     : c['client_id'],
-                'response_type' : 'code',
-                'scope'         : c['scope'],
-                'redirect_uri'  : c['reader_url']
+                'client_id': c['client_id'],
+                'response_type': 'code',
+                'scope': c['scope'],
+                'redirect_uri': c['reader_url']
             }
             if 'login_form_url' in c:
                 params['x_buchde.skin_id'] = c['x_buchde.skin_id']
@@ -335,12 +367,12 @@ class TolinoCloud:
                 raise TolinoException('oauth code request failed.')
 
             # Fetch OAUTH access token
-            r = s.post(c['token_url'], data = {
-                'client_id'    : c['client_id'],
-                'grant_type'   : 'authorization_code',
-                'code'         : auth_code,
-                'scope'        : c['scope'],
-                'redirect_uri' : c['reader_url']
+            r = s.post(c['token_url'], data={
+                'client_id': c['client_id'],
+                'grant_type': 'authorization_code',
+                'code': auth_code,
+                'scope': c['scope'],
+                'redirect_uri': c['reader_url']
             }, verify=True, allow_redirects=False)
             self._debug(r)
             try:
@@ -357,12 +389,12 @@ class TolinoCloud:
 
         if 'revoke_url' in c:
             r = s.post(c['revoke_url'],
-                data = {
-                    'client_id'  : c['client_id'],
-                    'token_type' : 'refresh_token',
-                    'token'      : self.refresh_token
-                }
-            )
+                       data={
+                           'client_id': c['client_id'],
+                           'token_type': 'refresh_token',
+                           'token': self.refresh_token
+                       }
+                       )
             self._debug(r)
             if r.status_code != 200:
                 raise TolinoException('logout failed.')
@@ -372,51 +404,50 @@ class TolinoCloud:
             if r.status_code != 200:
                 raise TolinoException('logout failed.')
 
-
     def register(self):
         s = self.session;
         c = self.partner_settings[self.partner_id]
 
         # Register our hardware
         r = s.post(c['register_url'],
-              data = json.dumps({'hardware_name':'other'}),
-              headers = {
-                'content-type': 'application/json',
-                't_auth_token': self.access_token,
-                'hardware_id' : TolinoCloud.hardware_id,
-                'reseller_id' : str(self.partner_id),
-                'client_type': 'TOLINO_WEBREADER',
-                'client_version': '4.4.1',
-                'hardware_type': 'HTML5'
-              }
-        )
+                   data=json.dumps({'hardware_name': 'other'}),
+                   headers={
+                       'content-type': 'application/json',
+                       't_auth_token': self.access_token,
+                       'hardware_id': TolinoCloud.hardware_id,
+                       'reseller_id': str(self.partner_id),
+                       'client_type': 'TOLINO_WEBREADER',
+                       'client_version': '4.4.1',
+                       'hardware_type': 'HTML5'
+                   }
+                   )
         self._debug(r)
         if r.status_code != 200:
             raise TolinoException('register {} failed.'.format(TolinoCloud.hardware_id))
 
-    def unregister(self, device_id = hardware_id):
+    def unregister(self, device_id=hardware_id):
         s = self.session;
         c = self.partner_settings[self.partner_id]
 
         r = s.post(c['unregister_url'],
-            data = json.dumps({
-                'deleteDevicesRequest':{
-                    'accounts' : [ {
-                        'auth_token'  : self.access_token,
-                        'reseller_id' : self.partner_id
-                    } ],
-                    'devices'  : [ {
-                        'device_id'   : device_id,
-                        'reseller_id' : self.partner_id
-                    } ]
-                }
-            }),
-            headers = {
-                'content-type': 'application/json',
-                't_auth_token': self.access_token,
-                'reseller_id' : str(self.partner_id)
-            }
-        )
+                   data=json.dumps({
+                       'deleteDevicesRequest': {
+                           'accounts': [{
+                               'auth_token': self.access_token,
+                               'reseller_id': self.partner_id
+                           }],
+                           'devices': [{
+                               'device_id': device_id,
+                               'reseller_id': self.partner_id
+                           }]
+                       }
+                   }),
+                   headers={
+                       'content-type': 'application/json',
+                       't_auth_token': self.access_token,
+                       'reseller_id': str(self.partner_id)
+                   }
+                   )
         self._debug(r)
         if r.status_code != 200:
             try:
@@ -430,20 +461,20 @@ class TolinoCloud:
         c = self.partner_settings[self.partner_id]
 
         r = s.post(c['devices_url'],
-            data = json.dumps({
-                'deviceListRequest':{
-                    'accounts' : [ {
-                        'auth_token'  : self.access_token,
-                        'reseller_id' : self.partner_id
-                    } ]
-                }
-            }),
-            headers = {
-                'content-type': 'application/json',
-                't_auth_token': self.access_token,
-                'reseller_id'        : str(self.partner_id)
-            }
-        )
+                   data=json.dumps({
+                       'deviceListRequest': {
+                           'accounts': [{
+                               'auth_token': self.access_token,
+                               'reseller_id': self.partner_id
+                           }]
+                       }
+                   }),
+                   headers={
+                       'content-type': 'application/json',
+                       't_auth_token': self.access_token,
+                       'reseller_id': str(self.partner_id)
+                   }
+                   )
         self._debug(r)
         if r.status_code != 200:
             raise TolinoException('device list request failed.')
@@ -453,16 +484,16 @@ class TolinoCloud:
             j = r.json()
             for item in j['deviceListResponse']['devices']:
                 devs.append({
-                    'id'         : item['deviceId'],
-                    'name'       : item['deviceName'],
-                    'type'       : {
-                        'unknown_imx50_rdp_1' : 'tolino shine',
-                        'tolino_vison'        : 'tolino vision',
-                        'HTML5_1'             : 'web browser'
-                        }.get(item['deviceType'], item['deviceType']),
-                    'partner'    : int(item['resellerId']),
-                    'registered' : int(item['deviceRegistered']),
-                    'lastusage'  : int(item['deviceLastUsage'])
+                    'id': item['deviceId'],
+                    'name': item['deviceName'],
+                    'type': {
+                        'unknown_imx50_rdp_1': 'tolino shine',
+                        'tolino_vison': 'tolino vision',
+                        'HTML5_1': 'web browser'
+                    }.get(item['deviceType'], item['deviceType']),
+                    'partner': int(item['resellerId']),
+                    'registered': int(item['deviceRegistered']),
+                    'lastusage': int(item['deviceLastUsage'])
                 })
             return devs
         except:
@@ -471,14 +502,14 @@ class TolinoCloud:
     def _parse_metadata(self, j):
         try:
             md = {
-                'partner'     : int(j['resellerId']),
-                'id'          : j['epubMetaData']['identifier'],
-                'title'       : j['epubMetaData']['title'],
-                'subtitle'    : j['epubMetaData']['subtitle'],
-                'author'      : [a['name'] for a in j['epubMetaData']['author']],
-                'mime'        : j['epubMetaData']['deliverable'][0]['contentFormat'],
-                'type'        : j['epubMetaData']['type'].lower(),
-                'purchased'   : int(j['epubMetaData']['deliverable'][0]['purchased'])
+                'partner': int(j['resellerId']),
+                'id': j['epubMetaData']['identifier'],
+                'title': j['epubMetaData']['title'],
+                'subtitle': j['epubMetaData']['subtitle'],
+                'author': [a['name'] for a in j['epubMetaData']['author']],
+                'mime': j['epubMetaData']['deliverable'][0]['contentFormat'],
+                'type': j['epubMetaData']['type'].lower(),
+                'purchased': int(j['epubMetaData']['deliverable'][0]['purchased'])
             }
             if j['epubMetaData']['issued']:
                 md['issued'] = int(j['epubMetaData']['issued'])
@@ -491,13 +522,13 @@ class TolinoCloud:
         c = self.partner_settings[self.partner_id]
 
         r = s.get(c['inventory_url'],
-            params = {'strip': 'true'},
-            headers = {
-                't_auth_token' : self.access_token,
-                'hardware_id'  : TolinoCloud.hardware_id,
-                'reseller_id'  : str(self.partner_id)
-            }
-        )
+                  params={'strip': 'true'},
+                  headers={
+                      't_auth_token': self.access_token,
+                      'hardware_id': TolinoCloud.hardware_id,
+                      'reseller_id': str(self.partner_id)
+                  }
+                  )
         self._debug(r)
         if r.status_code != 200:
             raise TolinoException('inventory list request failed.')
@@ -515,7 +546,7 @@ class TolinoCloud:
         except:
             raise TolinoException('inventory list request failed.')
 
-    def upload(self, filename, name = None, ext = None):
+    def upload(self, filename, name=None, ext=None):
         s = self.session;
         c = self.partner_settings[self.partner_id]
 
@@ -525,18 +556,18 @@ class TolinoCloud:
             ext = filename.split('.')[-1]
 
         mime = {
-            'pdf'  : 'application/pdf',
-            'epub' : 'application/epub+zip'
+            'pdf': 'application/pdf',
+            'epub': 'application/epub+zip'
         }.get(ext.lower(), 'application/pdf')
 
         r = s.post(c['upload_url'],
-            files = [('file', (name, open(filename, 'rb'), mime))],
-            headers = {
-                't_auth_token' : self.access_token,
-                'hardware_id'  : TolinoCloud.hardware_id,
-                'reseller_id'         : str(self.partner_id)
-            }
-        )
+                   files=[('file', (name, open(filename, 'rb'), mime))],
+                   headers={
+                       't_auth_token': self.access_token,
+                       'hardware_id': TolinoCloud.hardware_id,
+                       'reseller_id': str(self.partner_id)
+                   }
+                   )
         self._debug(r)
         if r.status_code != 200:
             raise TolinoException('file upload failed.')
@@ -552,15 +583,15 @@ class TolinoCloud:
         c = self.partner_settings[self.partner_id]
 
         r = s.get(c['delete_url'],
-            params = {
-                'deliverableId': id
-            },
-            headers = {
-                't_auth_token' : self.access_token,
-                'hardware_id'  : TolinoCloud.hardware_id,
-                'reseller_id'   : str(self.partner_id)
-            }
-        )
+                  params={
+                      'deliverableId': id
+                  },
+                  headers={
+                      't_auth_token': self.access_token,
+                      'hardware_id': TolinoCloud.hardware_id,
+                      'reseller_id': str(self.partner_id)
+                  }
+                  )
         self._debug(r)
         if r.status_code != 200:
             try:
@@ -575,12 +606,12 @@ class TolinoCloud:
 
         b64 = base64.b64encode(bytes(id, 'utf-8')).decode('utf-8')
         r = s.get(c['downloadinfo_url'].format(b64, b64),
-            headers = {
-                't_auth_token' : self.access_token,
-                'hardware_id'  : TolinoCloud.hardware_id,
-                'reseller_id'  : str(self.partner_id)
-            }
-        )
+                  headers={
+                      't_auth_token': self.access_token,
+                      'hardware_id': TolinoCloud.hardware_id,
+                      'reseller_id': str(self.partner_id)
+                  }
+                  )
         self._debug(r)
         if r.status_code != 200:
             raise TolinoException('download info request failed.')
@@ -588,9 +619,9 @@ class TolinoCloud:
         j = r.json()
         url = j['DownloadInfo']['contentUrl']
         return {
-            'url'      : url,
-            'filename' : url.split('/')[-1],
-            'filetype' : j['DownloadInfo']['format'],
+            'url': url,
+            'filename': url.split('/')[-1],
+            'filetype': j['DownloadInfo']['format'],
         }
 
     def download(self, path, id):
@@ -600,13 +631,13 @@ class TolinoCloud:
         di = self.download_info(id)
 
         r = s.get(di['url'],
-            stream=True,
-            headers = {
-                't_auth_token' : self.access_token,
-                'hardware_id'  : TolinoCloud.hardware_id,
-                'reseller_id'  : str(self.partner_id)
-            }
-        )
+                  stream=True,
+                  headers={
+                      't_auth_token': self.access_token,
+                      'hardware_id': TolinoCloud.hardware_id,
+                      'reseller_id': str(self.partner_id)
+                  }
+                  )
         self._debug(r)
         if r.status_code != 200:
             try:
@@ -614,7 +645,6 @@ class TolinoCloud:
                 raise TolinoException('download request failed: {}'.format(j['ResponseInfo']['message']))
             except KeyError:
                 raise TolinoException('download request : reason unknown.')
-
 
         filename = path + '/' + di['filename'] if path else di['filename']
         with open(filename, 'wb') as f:

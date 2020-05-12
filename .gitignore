@@ -1,2 +1,4 @@
 __pycache__
 *.bak
+venv/
+.idea/
