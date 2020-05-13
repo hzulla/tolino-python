@@ -33,6 +33,8 @@ to allow scripted access to a few very basic commands:
 - delete an ebook / upload
 - list devices connected to an account
 - unregister a device from an account
+- update meta data
+- update cover
 
 Status
 ======
@@ -43,6 +45,7 @@ Works with these partners:
 - Thalia.de (3)
 - Thalia.at (4)
 - Buch.de (6)
+- books.ch / orellfuessli.ch (8)
 - Hugendubel.de (13)
 - Buecher.de (30)
 
@@ -55,7 +58,7 @@ To-Do
 
 Better error handling.
 
-More REST API calls (e.g. meta data edit, cover image upload).
+More REST API calls (e.g. collection management).
 
 Support for more resellers.
 

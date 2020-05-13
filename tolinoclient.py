@@ -91,6 +91,23 @@ def delete(args):
     c.logout()
     print('deleted {} from tolino cloud.'.format(args.document_id))
 
+def meta(args):
+    c = TolinoCloud(args.partner)
+    c.login(args.user, args.password)
+    c.register()
+    c.metadata(args.document_id, args.title, args.subtitle, args.author, args.publisher, args.isbn, args.edition, args.issued, args.language)
+    c.unregister()
+    c.logout()
+    print('successfully modified book {}'.format(args.document_id))
+
+def cover(args):
+    c = TolinoCloud(args.partner)
+    c.login(args.user, args.password)
+    c.register()
+    c.cover(args.document_id, args.image)
+    c.unregister()
+    c.logout()
+    print('successfully modified cover for book {}'.format(args.document_id))
 
 parser = argparse.ArgumentParser(
     description='cmd line client to access personal tolino cloud storage space.'
@@ -114,6 +131,23 @@ subparsers = parser.add_subparsers()
 
 s = subparsers.add_parser('inventory', help='fetch and print inventory')
 s.set_defaults(func=inventory)
+
+s = subparsers.add_parser('meta', help='set new meta data')
+s.add_argument('document_id')
+s.add_argument('--title', help='set a new title <string> eg. "Book Title 1"')
+s.add_argument('--subtitle', help='set a new subtitle <string> eg. "Subtitle 1"')
+s.add_argument('--author', help='set a new author <string> eg. "Hans Muster"')
+s.add_argument('--publisher', help='set a new publisher <string> eg. "Carlsen Verlag"')
+s.add_argument('--isbn', help='set a new isbn <string> eg."977-3-958-39650-2"')
+s.add_argument('--edition', help='set a new edition <int> eg. "3"')
+s.add_argument('--issued', help='set a new issued date <int> eg. "01.01.2019" ')
+s.add_argument('--language', help='set a new language <string> eg. "en"')
+s.set_defaults(func=meta)
+
+s = subparsers.add_parser('cover', help='upload a cover for a specific book')
+s.add_argument('document_id')
+s.add_argument('image', metavar='IMAGE', help="must be a .png or .jpg")
+s.set_defaults(func=cover)
 
 s = subparsers.add_parser('upload', help='upload a file (must be either .pdf or .epub)')
 s.add_argument('filename', metavar='FILE')
