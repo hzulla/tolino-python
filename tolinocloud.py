@@ -513,7 +513,6 @@ class TolinoCloud:
             raise TolinoException('device list request failed.')
 
     def _parse_metadata(self, j):
-        print(j)
         try:
             md = {
                 'partner': int(j['resellerId']),
