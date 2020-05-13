@@ -36,6 +36,7 @@ function __fish_tolino_partners
   echo "0	List partners"
   echo "3	thalia.de"
   echo "6	buch.de"
+  echo "8 book.ch / orellfuessli.ch"
   echo "13	hugendubel.de"
 end
 
@@ -45,6 +46,8 @@ complete -c $PROG --no-files
 
 # Subcommands
 complete -c $PROG -n '__fish_tolino_needs_command' -a 'inventory'  -d 'Fetch and print inventory'
+complete -c $PROG -n '__fish_tolino_needs_command' -a 'meta'       -d 'Update meta data of a book'
+complete -c $PROG -n '__fish_tolino_needs_command' -a 'cover'      -d 'Update cover of a book'
 complete -c $PROG -n '__fish_tolino_needs_command' -a 'upload'     -d 'Upload a file (must be either .pdf or .epub)'
 complete -c $PROG -n '__fish_tolino_needs_command' -a 'download'   -d 'Download a document'
 complete -c $PROG -n '__fish_tolino_needs_command' -a 'delete'     -d 'Delete a document (be careful!)'
