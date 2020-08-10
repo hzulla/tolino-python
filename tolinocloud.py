@@ -120,15 +120,15 @@ class TolinoCloud:
         3: {
             # Thalia.de
             'client_id'        : 'webshop01',
-            'scope'            : 'SCOPE_BOSH SCOPE_BUCHDE',
+            'scope'            : 'SCOPE_BOSH',
             'signup_url'       : 'https://www.thalia.de/shop/home/kunde/neu/',
             'profile_url'      : 'https://www.thalia.de/shop/home/kunde/',
-            'token_url'        : 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/token',
-            'login_form_url'   : 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/login',
+            'token_url'        : 'https://www.thalia.de/auth/oauth2/token',
+            'login_form_url'   : 'https://www.thalia.de/de.thalia.ecp.authservice.application/oauth2/login',
             'x_buchde.skin_id' : '17',
             'x_buchde.mandant_id' :'2',
-            'auth_url'         : 'https://auth.buch.de/de.thalia.ecp.authservice.application/oauth2/authorize',
-            'login_url'        : 'https://auth.buch.de/de.thalia.ecp.authservice.application/login.do',
+            'auth_url'         : 'https://www.thalia.de/de.thalia.ecp.authservice.application/oauth2/authorize',
+            'login_url'        : 'https://www.thalia.de/de.thalia.ecp.authservice.application/login.do',
             # 'revoke_url'       : 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/revoke',
             'login_form'       : {
                 'username' : 'j_username',
