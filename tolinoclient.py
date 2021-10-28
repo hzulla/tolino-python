@@ -70,7 +70,7 @@ def upload(args):
     c.register()
     document_id = c.upload(args.filename, args.name)
     c.unregister()
-    c.logout()
+#    c.logout()
     print('uploaded {} to tolino cloud as {}.'.format(args.filename, document_id))
 
 def download(args):

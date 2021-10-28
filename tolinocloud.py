@@ -23,7 +23,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
 
-
+import cloudscraper
 import platform
 import json
 import base64
@@ -129,6 +129,7 @@ class TolinoCloud:
             'x_buchde.mandant_id' :'2',
             'auth_url'         : 'https://www.thalia.de/de.thalia.ecp.authservice.application/oauth2/authorize',
             'login_url'        : 'https://www.thalia.de/de.thalia.ecp.authservice.application/login.do',
+            'revoke_url'       : 'https://www.thalia.de/auth/oauth2/revoke',
             # 'revoke_url'       : 'https://www.thalia.de/de.buch.appservices/api/2004/oauth2/revoke',
             'login_form'       : {
                 'username' : 'j_username',
@@ -282,7 +283,7 @@ class TolinoCloud:
             logging.debug('-------------------------------------------------------')
 
     def login(self, username, password):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         # Login with partner site
@@ -352,14 +353,14 @@ class TolinoCloud:
                 raise TolinoException('oauth access token request failed.')
 
     def logout(self):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         if 'revoke_url' in c:
             r = s.post(c['revoke_url'],
                 data = {
                     'client_id'  : c['client_id'],
-                    'token_type' : 'refresh_token',
+                    'token_type_hint' : 'refresh_token',
                     'token'      : self.refresh_token
                 }
             )
@@ -374,7 +375,7 @@ class TolinoCloud:
 
 
     def register(self):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         # Register our hardware
@@ -395,7 +396,7 @@ class TolinoCloud:
             raise TolinoException('register {} failed.'.format(TolinoCloud.hardware_id))
 
     def unregister(self, device_id = hardware_id):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         r = s.post(c['unregister_url'],
@@ -426,7 +427,7 @@ class TolinoCloud:
                 raise TolinoException('unregister {} failed: reason unknown.'.format(device_id))
 
     def devices(self):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         r = s.post(c['devices_url'],
@@ -487,7 +488,7 @@ class TolinoCloud:
             raise TolinoException('could not parse metadata')
 
     def inventory(self):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         r = s.get(c['inventory_url'],
@@ -516,7 +517,7 @@ class TolinoCloud:
             raise TolinoException('inventory list request failed.')
 
     def upload(self, filename, name = None, ext = None):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         if name is None:
@@ -548,7 +549,7 @@ class TolinoCloud:
             raise TolinoException('file upload failed.')
 
     def delete(self, id):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         r = s.get(c['delete_url'],
@@ -570,7 +571,7 @@ class TolinoCloud:
                 raise TolinoException('delete {} failed: reason unknown.'.format(id))
 
     def download_info(self, id):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         b64 = base64.b64encode(bytes(id, 'utf-8')).decode('utf-8')
@@ -594,7 +595,7 @@ class TolinoCloud:
         }
 
     def download(self, path, id):
-        s = self.session;
+        s = cloudscraper.create_scraper(delay=6);
         c = self.partner_settings[self.partner_id]
 
         di = self.download_info(id)
