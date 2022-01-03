@@ -1,3 +1,11 @@
+This library needs a new maintainer
+===================================
+
+I have stopped maintaining this library, as I do not own a Tolino
+device anymore. If this library is still useful to you, I'd like
+to hand it over to a new maintainer. Please contact me if you are
+interested. Thanks!
+
 Access to tolino cloud with Python 3
 ====================================
 
