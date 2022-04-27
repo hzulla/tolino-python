@@ -1,10 +1,18 @@
-This library needs a new maintainer
-===================================
+ATTENTION: THIS LIBRARY HAS A NEW MAINTAINER
+============================================
+
+You're at the wrong place, this library has a new maintainer.
+You can find the more recent, maintained fork of this library
+at [tolino-calibre-sync](https://github.com/darkphoenix/tolino-calibre-sync)
+with added features. Thanks to @darkphoenix for keeping the
+code alive!
+
+THIS REPOSITORY IS OUTDATED AND READ-ONLY
+=========================================
 
 I have stopped maintaining this library, as I do not own a Tolino
-device anymore. If this library is still useful to you, I'd like
-to hand it over to a new maintainer. Please contact me if you are
-interested. Thanks!
+device anymore. Thanks to all contributors and users, I'm glad people
+found it useful.
 
 Access to tolino cloud with Python 3
 ====================================
