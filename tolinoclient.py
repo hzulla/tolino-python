@@ -6,13 +6,27 @@
 
 import configparser
 import argparse
-import json
 import sys
 import datetime
 import logging
 from os.path import expanduser
+import getpass
 
 from tolinocloud import TolinoCloud
+
+
+class PasswordPromptAction(argparse.Action):
+    '''
+    class to prompt for password if none is specified on the command line
+    '''
+    def __call__(self, parser, args, values, option_string=None):
+        # If no value is given on the commandline prompt for password.
+        if values:
+            # Ideally a security warning could be generated here.
+            setattr(args, self.dest, values)
+        else:
+            setattr(args, self.dest, getpass.getpass())
+
 
 def inventory(args):
     c = TolinoCloud(args.partner)
@@ -92,6 +106,12 @@ def delete(args):
     print('deleted {} from tolino cloud.'.format(args.document_id))
 
 
+def list_partners(args):
+    print('List of partner ids available:')
+    for partner_id in sorted(TolinoCloud.partner_settings.keys()):
+        print('{} : {}'.format(partner_id, TolinoCloud.partner_name[partner_id]))
+    sys.exit(0)
+
 parser = argparse.ArgumentParser(
     description='cmd line client to access personal tolino cloud storage space.'
 )
@@ -105,9 +125,9 @@ if args.config:
         defaults = dict(c.items('Defaults'))
         parser.set_defaults(**defaults)
 
-parser.add_argument('--user', type=str, help='username (usually an email address)')
-parser.add_argument('--password', type=str, help='password')
-parser.add_argument('--partner', type=int, help='shop / partner id (use 0 for list)')
+parser.add_argument('--user', '-u', type=str, help='username (usually an email address)')
+parser.add_argument('--password', '-p', action=PasswordPromptAction, type=str, help='password. Leave empty for a password prompt', nargs='?')
+parser.add_argument('--partner', type=int, help='shop / partner id')
 parser.add_argument('--debug', action="store_true", help='log additional debugging info')
 
 subparsers = parser.add_subparsers()
@@ -135,16 +155,13 @@ s = subparsers.add_parser('unregister', help='unregister device from cloud accou
 s.add_argument('device_id')
 s.set_defaults(func=unregister)
 
+s = subparsers.add_parser('list-partners', help='list devices registered to cloud account')
+s.set_defaults(func=list_partners)
+
 args = parser.parse_args(remaining_argv)
 
 if args.debug:
     logging.basicConfig(level=logging.DEBUG)
-    
-if args.partner == 0:
-    print('List of partner ids available:')
-    for partner_id in sorted(TolinoCloud.partner_settings.keys()):
-        print('{} : {}'.format(partner_id, TolinoCloud.partner_name[partner_id]))
-    sys.exit(1)
 
 if (not args.user) or (not args.password):
     print('Login credentials user/password required.')
